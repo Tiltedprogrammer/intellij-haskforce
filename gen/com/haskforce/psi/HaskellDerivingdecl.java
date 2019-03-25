@@ -7,19 +7,13 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellDerivingdecl extends HaskellCompositeElement {
 
-  @Nullable
-  HaskellCtype getCtype();
-
-  @Nullable
-  HaskellPpragma getPpragma();
+  @NotNull
+  List<HaskellCtype> getCtypeList();
 
   @NotNull
-  PsiElement getDeriving();
+  List<HaskellPpragma> getPpragmaList();
 
-  @Nullable
-  PsiElement getInstance();
-
-  @Nullable
-  PsiElement getNewtype();
+  @NotNull
+  List<HaskellVarid> getVaridList();
 
 }

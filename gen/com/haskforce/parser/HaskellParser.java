@@ -2225,30 +2225,51 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "deriving" "newtype"? (dclass  | <<commaSeparate dclass>>)
+  // ("deriving" ("newtype"|varid)? (dclass  | <<commaSeparate dclass>>) ("via" ctype)?)*
   static boolean deriving(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "deriving")) return false;
-    if (!nextTokenIs(b, DERIVING)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, DERIVING);
-    p = r; // pin = 1
-    r = r && report_error_(b, deriving_1(b, l + 1));
-    r = p && deriving_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // "newtype"?
-  private static boolean deriving_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "deriving_1")) return false;
-    consumeToken(b, NEWTYPE);
+    while (true) {
+      int c = current_position_(b);
+      if (!deriving_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "deriving", c)) break;
+    }
     return true;
   }
 
+  // "deriving" ("newtype"|varid)? (dclass  | <<commaSeparate dclass>>) ("via" ctype)?
+  private static boolean deriving_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "deriving_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DERIVING);
+    r = r && deriving_0_1(b, l + 1);
+    r = r && deriving_0_2(b, l + 1);
+    r = r && deriving_0_3(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ("newtype"|varid)?
+  private static boolean deriving_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "deriving_0_1")) return false;
+    deriving_0_1_0(b, l + 1);
+    return true;
+  }
+
+  // "newtype"|varid
+  private static boolean deriving_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "deriving_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NEWTYPE);
+    if (!r) r = varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
   // dclass  | <<commaSeparate dclass>>
-  private static boolean deriving_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "deriving_2")) return false;
+  private static boolean deriving_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "deriving_0_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = dclass(b, l + 1);
@@ -2257,33 +2278,85 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  /* ********************************************************** */
-  // "deriving" "newtype"? "instance" [ppragma] ctype
-  public static boolean derivingdecl(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "derivingdecl")) return false;
-    if (!nextTokenIs(b, DERIVING)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, DERIVINGDECL, null);
-    r = consumeToken(b, DERIVING);
-    p = r; // pin = 1
-    r = r && report_error_(b, derivingdecl_1(b, l + 1));
-    r = p && report_error_(b, consumeToken(b, INSTANCE)) && r;
-    r = p && report_error_(b, derivingdecl_3(b, l + 1)) && r;
-    r = p && ctype(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // "newtype"?
-  private static boolean derivingdecl_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "derivingdecl_1")) return false;
-    consumeToken(b, NEWTYPE);
+  // ("via" ctype)?
+  private static boolean deriving_0_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "deriving_0_3")) return false;
+    deriving_0_3_0(b, l + 1);
     return true;
   }
 
+  // "via" ctype
+  private static boolean deriving_0_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "deriving_0_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, "via");
+    r = r && ctype(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ("deriving" ("via" ctype|"newtype"|varid)? "instance" [ppragma] ctype)*
+  public static boolean derivingdecl(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "derivingdecl")) return false;
+    Marker m = enter_section_(b, l, _NONE_, DERIVINGDECL, "<derivingdecl>");
+    while (true) {
+      int c = current_position_(b);
+      if (!derivingdecl_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "derivingdecl", c)) break;
+    }
+    exit_section_(b, l, m, true, false, null);
+    return true;
+  }
+
+  // "deriving" ("via" ctype|"newtype"|varid)? "instance" [ppragma] ctype
+  private static boolean derivingdecl_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "derivingdecl_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DERIVING);
+    r = r && derivingdecl_0_1(b, l + 1);
+    r = r && consumeToken(b, INSTANCE);
+    r = r && derivingdecl_0_3(b, l + 1);
+    r = r && ctype(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ("via" ctype|"newtype"|varid)?
+  private static boolean derivingdecl_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "derivingdecl_0_1")) return false;
+    derivingdecl_0_1_0(b, l + 1);
+    return true;
+  }
+
+  // "via" ctype|"newtype"|varid
+  private static boolean derivingdecl_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "derivingdecl_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = derivingdecl_0_1_0_0(b, l + 1);
+    if (!r) r = consumeToken(b, NEWTYPE);
+    if (!r) r = varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // "via" ctype
+  private static boolean derivingdecl_0_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "derivingdecl_0_1_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, "via");
+    r = r && ctype(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
   // [ppragma]
-  private static boolean derivingdecl_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "derivingdecl_3")) return false;
+  private static boolean derivingdecl_0_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "derivingdecl_0_3")) return false;
     ppragma(b, l + 1);
     return true;
   }

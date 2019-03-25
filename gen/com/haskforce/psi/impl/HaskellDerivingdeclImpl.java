@@ -26,33 +26,21 @@ public class HaskellDerivingdeclImpl extends HaskellCompositeElementImpl impleme
   }
 
   @Override
-  @Nullable
-  public HaskellCtype getCtype() {
-    return PsiTreeUtil.getChildOfType(this, HaskellCtype.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellPpragma getPpragma() {
-    return PsiTreeUtil.getChildOfType(this, HaskellPpragma.class);
+  @NotNull
+  public List<HaskellCtype> getCtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCtype.class);
   }
 
   @Override
   @NotNull
-  public PsiElement getDeriving() {
-    return notNullChild(findChildByType(DERIVING));
+  public List<HaskellPpragma> getPpragmaList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
   }
 
   @Override
-  @Nullable
-  public PsiElement getInstance() {
-    return findChildByType(INSTANCE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNewtype() {
-    return findChildByType(NEWTYPE);
+  @NotNull
+  public List<HaskellVarid> getVaridList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarid.class);
   }
 
 }
