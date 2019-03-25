@@ -86,6 +86,7 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     public void testLayout00023()       { doTest(true, true); }
     public void testLayout00024()       { doTest(true, true); }
     public void testLayout00025()       { doTest(true, true); }
+    public void testLayout00026()       { doTest(true, true); }
     public void testList00001()         { doTest(true, true); }
     public void testComment00001()      { doTest(true, true); }
     public void testComment00002()      { doTest(true, true); }

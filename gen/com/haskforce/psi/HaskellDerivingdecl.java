@@ -10,10 +10,19 @@ public interface HaskellDerivingdecl extends HaskellCompositeElement {
   @NotNull
   List<HaskellCtype> getCtypeList();
 
-  @NotNull
-  List<HaskellPpragma> getPpragmaList();
+  @Nullable
+  HaskellPpragma getPpragma();
+
+  @Nullable
+  HaskellVarid getVarid();
 
   @NotNull
-  List<HaskellVarid> getVaridList();
+  PsiElement getDeriving();
+
+  @Nullable
+  PsiElement getInstance();
+
+  @Nullable
+  PsiElement getNewtype();
 
 }

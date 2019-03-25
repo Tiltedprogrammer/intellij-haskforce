@@ -32,9 +32,9 @@ public class HaskellNewtypedeclImpl extends HaskellCompositeElementImpl implemen
   }
 
   @Override
-  @NotNull
-  public List<HaskellCtype> getCtypeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCtype.class);
+  @Nullable
+  public HaskellCtype getCtype() {
+    return PsiTreeUtil.getChildOfType(this, HaskellCtype.class);
   }
 
   @Override
@@ -62,9 +62,15 @@ public class HaskellNewtypedeclImpl extends HaskellCompositeElementImpl implemen
   }
 
   @Override
-  @NotNull
-  public List<HaskellVarid> getVaridList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarid.class);
+  @Nullable
+  public HaskellVarid getVarid() {
+    return PsiTreeUtil.getChildOfType(this, HaskellVarid.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDeriving() {
+    return findChildByType(DERIVING);
   }
 
   @Override
@@ -77,6 +83,18 @@ public class HaskellNewtypedeclImpl extends HaskellCompositeElementImpl implemen
   @Nullable
   public PsiElement getEquals() {
     return findChildByType(EQUALS);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
   }
 
 }
